@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coral Alvorada - Vivo Está</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #00111B;
+        }
+        /* Estilos customizados para as barras */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #FC5E1E;
+            cursor: pointer;
+            margin-top: -6px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #FC5E1E;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .playlist-item:hover {
+            background-color: #264B2F;
+        }
+        .playlist-item.playing {
+            background-color: #FC5E1E;
+            color: #FFFFFF;
+        }
+        .loader-icon {
+            color: #75FF31;
+        }
+        #loop-btn.active {
+            color: #75FF31;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-[#053D47] rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+        
+        <!-- Cabeçalho e Seletor -->
+        <div class="p-6 bg-[#053D47]/80 backdrop-blur-sm border-b border-white/5">
+            <h1 class="text-xs font-bold text-[#75FF31] uppercase tracking-widest mb-1">Kit de Ensaio</h1>
+            <h2 class="text-xl font-bold mb-4">Vivo Está (para uso interno)</h2>
+            
+            <div class="relative">
+                <label for="voice-selector" class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Selecione sua voz:</label>
+                <select id="voice-selector" class="w-full bg-[#00111B] border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FC5E1E] transition-all">
+                    <option value="Soprano1">Soprano 1</option>
+                    <option value="Soprano2">Soprano 2</option>
+                    <option value="Contralto">Contralto</option>
+                    <option value="Tenor">Tenor</option>
+                    <option value="Baixo">Baixo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Display do Player -->
+        <div class="p-6 text-center">
+            <div class="mb-2">
+                <i class="fas fa-music text-4xl text-[#FC5E1E]/50"></i>
+            </div>
+            <h3 class="text-lg font-medium leading-tight px-4" id="current-song-title">Aguardando seleção...</h3>
+            <p class="text-xs text-[#75FF31] mt-2 font-mono uppercase" id="current-voice-label">Voz: -</p>
+        </div>
+
+        <!-- Controles e Barra de Progresso -->
+        <div class="px-6 pb-6">
+             <div class="flex items-center justify-between text-[10px] text-gray-400 mb-2 font-mono">
+                <span id="current-time">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-[#264B2F] rounded-lg appearance-none cursor-pointer">
+            
+            <div class="flex items-center justify-between mt-6">
+                <!-- Botão de Loop -->
+                <button id="loop-btn" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-200 active" title="Repetir">
+                    <i class="fas fa-repeat fa-lg"></i>
+                </button>
+                
+                <!-- Controles Principais -->
+                <div class="flex items-center justify-center space-x-4">
+                    <button id="prev-btn" class="text-gray-300 hover:text-white transition-colors duration-200 p-2">
+                        <i class="fas fa-backward-step fa-xl"></i>
+                    </button>
+                    <button id="play-pause-btn" class="bg-[#FC5E1E] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200">
+                        <i id="play-pause-icon" class="fas fa-play fa-xl translate-x-0.5"></i>
+                    </button>
+                    <button id="next-btn" class="text-gray-300 hover:text-white transition-colors duration-200 p-2">
+                        <i class="fas fa-forward-step fa-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Controle de Volume -->
+                <div class="flex items-center space-x-2 w-1/4 group">
+                    <i id="volume-icon" class="fas fa-volume-high text-gray-400 text-xs"></i>
+                    <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-full h-1 bg-[#264B2F] rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <!-- Playlist -->
+        <div class="bg-[#00111B] p-4 border-t border-white/5">
+            <div class="flex items-center justify-between mb-3 px-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Arquivos na Pasta</h3>
+                <span id="file-count" class="text-[10px] bg-[#053D47] px-2 py-0.5 rounded text-gray-300">0 arquivos</span>
+            </div>
+            <div id="playlist" class="max-h-52 overflow-y-auto space-y-1 pr-1">
+                <div id="loader" class="text-center p-8 opacity-50">
+                    <i class="fas fa-spinner fa-spin mr-2 loader-icon"></i> 
+                    <span class="text-xs">Carregando...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rodapé -->
+        <div class="bg-[#053D47] text-center p-4 text-[10px] text-gray-500 uppercase tracking-tighter">
+            <p>© Coral Alvorada - Apenas para uso interno</p>
+        </div>
+    </div>
+
+    <audio id="audio-player" class="hidden"></audio>
+
+    <script>
+        // --- CONFIGURAÇÃO ATUALIZADA ---
+        const GITHUB_USER = "glauberlasantiago";
+        const GITHUB_REPO = "VivoEsta"; // Nome corrigido baseado na URL fornecida
+
+        // --- ELEMENTOS DO DOM ---
+        const audioPlayer = document.getElementById('audio-player');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const currentSongTitleEl = document.getElementById('current-song-title');
+        const currentVoiceLabel = document.getElementById('current-voice-label');
+        const playlistEl = document.getElementById('playlist');
+        const loader = document.getElementById('loader');
+        const loopBtn = document.getElementById('loop-btn');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeIcon = document.getElementById('volume-icon');
+        const voiceSelector = document.getElementById('voice-selector');
+        const fileCountEl = document.getElementById('file-count');
+
+        // --- ESTADO DO PLAYER ---
+        let playlist = [];
+        let currentSongIndex = -1;
+        let isPlaying = false;
+        let isLooping = true;
+
+        // --- INICIALIZAÇÃO ---
+        audioPlayer.loop = isLooping;
+        audioPlayer.volume = 1;
+
+        /**
+         * Busca os arquivos de áudio baseado na pasta da voz selecionada.
+         */
+        async function fetchAndBuildPlaylist() {
+            const selectedVoice = voiceSelector.value;
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${selectedVoice}`;
+            
+            // UI Update
+            loader.style.display = 'block';
+            playlistEl.innerHTML = '';
+            playlistEl.appendChild(loader);
+            fileCountEl.textContent = 'Buscando...';
+            currentVoiceLabel.textContent = `Voz: ${selectedVoice}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    let errorMsg = `Erro ${response.status}: `;
+                    if(response.status === 404) errorMsg += `Pasta "${selectedVoice}" não encontrada no repositório "${GITHUB_REPO}".`;
+                    else if(response.status === 403) errorMsg += "Limite de acessos da API atingido ou repositório privado.";
+                    else errorMsg += "Falha ao conectar com o GitHub.";
+                    
+                    throw new Error(errorMsg);
+                }
+                const files = await response.json();
+                
+                playlist = files
+                    .filter(file => file.name.toLowerCase().endsWith('.mp3'))
+                    .map(file => ({
+                        name: file.name.replace('.mp3', '').replace(/_/g, ' ').replace(/-/g, ' - '),
+                        url: file.download_url
+                    }));
+
+                renderPlaylist();
+                fileCountEl.textContent = `${playlist.length} arquivo(s)`;
+
+            } catch (error) {
+                console.error(error);
+                playlistEl.innerHTML = `
+                    <div class="text-red-400 p-4 text-center text-xs bg-red-900/20 rounded-lg">
+                        <i class="fas fa-exclamation-triangle mb-2 block text-lg"></i>
+                        ${error.message}
+                        <div class="mt-2 text-[10px] text-gray-400">Verifique se as pastas (Soprano1, Tenor, etc) existem dentro do repositório "${GITHUB_REPO}".</div>
+                    </div>`;
+                fileCountEl.textContent = 'Erro';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        /**
+         * Renderiza a lista na tela.
+         */
+        function renderPlaylist() {
+            playlistEl.innerHTML = '';
+            
+            if (playlist.length === 0) {
+                playlistEl.innerHTML = `<div class="text-gray-500 p-4 text-center text-xs">Nenhum arquivo .mp3 encontrado nesta pasta.</div>`;
+                return;
+            }
+
+            playlist.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'playlist-item p-3 rounded-lg cursor-pointer flex items-center transition-all duration-200 border border-transparent';
+                songItem.innerHTML = `
+                    <div class="w-6 h-6 flex items-center justify-center rounded-full bg-white/5 mr-3 text-[10px] font-mono">
+                        ${index + 1}
+                    </div>
+                    <span class="flex-1 truncate text-sm font-medium">${song.name}</span>
+                `;
+                songItem.addEventListener('click', () => loadSong(index));
+                playlistEl.appendChild(songItem);
+            });
+        }
+        
+        function loadSong(index) {
+            if (index < 0 || index >= playlist.length) return;
+            currentSongIndex = index;
+            const song = playlist[currentSongIndex];
+            audioPlayer.src = song.url;
+            currentSongTitleEl.textContent = song.name;
+            updatePlayingUI();
+            playSong();
+        }
+
+        function playSong() {
+            isPlaying = true;
+            audioPlayer.play().catch(e => console.log("Toque play para iniciar."));
+            playPauseIcon.classList.replace('fa-play', 'fa-pause');
+            playPauseIcon.classList.remove('translate-x-0.5');
+        }
+
+        function pauseSong() {
+            isPlaying = false;
+            audioPlayer.pause();
+            playPauseIcon.classList.replace('fa-pause', 'fa-play');
+            playPauseIcon.classList.add('translate-x-0.5');
+        }
+
+        function togglePlayPause() {
+            if (currentSongIndex === -1 && playlist.length > 0) {
+                loadSong(0);
+            } else if (playlist.length > 0) {
+                isPlaying ? pauseSong() : playSong();
+            }
+        }
+
+        function playPrevious() {
+            if (playlist.length === 0) return;
+            const newIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadSong(newIndex);
+        }
+
+        function playNext() {
+            if (playlist.length === 0) return;
+            const newIndex = (currentSongIndex + 1) % playlist.length;
+            loadSong(newIndex);
+        }
+        
+        function updateProgress(e) {
+            const { duration, currentTime } = e.srcElement;
+            if (duration) {
+                progressBar.value = (currentTime / duration) * 100;
+                currentTimeEl.textContent = formatTime(currentTime);
+                durationEl.textContent = formatTime(duration);
+            }
+        }
+        
+        function setProgress() {
+            const duration = audioPlayer.duration;
+            if (duration) {
+                audioPlayer.currentTime = (progressBar.value / 100) * duration;
+            }
+        }
+
+        function toggleLoop() {
+            isLooping = !isLooping;
+            audioPlayer.loop = isLooping;
+            loopBtn.classList.toggle('active', isLooping);
+        }
+
+        function setVolume() {
+            const volumeValue = volumeSlider.value / 100;
+            audioPlayer.volume = volumeValue;
+            
+            if (volumeValue === 0) {
+                volumeIcon.className = 'fas fa-volume-xmark text-gray-400 text-xs';
+            } else if (volumeValue < 0.5) {
+                volumeIcon.className = 'fas fa-volume-low text-gray-400 text-xs';
+            } else {
+                volumeIcon.className = 'fas fa-volume-high text-gray-400 text-xs';
+            }
+        }
+
+        function updatePlayingUI() {
+            document.querySelectorAll('.playlist-item').forEach((item, index) => {
+                if (index === currentSongIndex) {
+                    item.classList.add('playing');
+                    item.classList.remove('border-transparent');
+                } else {
+                    item.classList.remove('playing');
+                    item.classList.add('border-transparent');
+                }
+            });
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // --- EVENT LISTENERS ---
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        prevBtn.addEventListener('click', playPrevious);
+        nextBtn.addEventListener('click', playNext);
+        loopBtn.addEventListener('click', toggleLoop);
+        volumeSlider.addEventListener('input', setVolume);
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('ended', () => {
+            if (!isLooping) playNext();
+        });
+        progressBar.addEventListener('input', setProgress);
+        
+        voiceSelector.addEventListener('change', () => {
+            pauseSong();
+            currentSongIndex = -1;
+            currentSongTitleEl.textContent = "Aguardando seleção...";
+            fetchAndBuildPlaylist();
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchAndBuildPlaylist);
+
+    </script>
+</body>
+</html>
