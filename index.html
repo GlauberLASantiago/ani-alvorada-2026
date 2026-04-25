@@ -66,11 +66,10 @@
             <div class="relative">
                 <label for="voice-selector" class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Selecione sua voz:</label>
                 <select id="voice-selector" class="w-full bg-[#00111B] border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FC5E1E] transition-all">
-                    <option value="Soprano1">Soprano 1</option>
-                    <option value="Soprano2">Soprano 2</option>
-                    <option value="Contralto">Contralto</option>
-                    <option value="Tenor">Tenor</option>
-                    <option value="Baixo">Baixo</option>
+                    <option value="soprano">soprano</option>
+                    <option value="contralto">contralto</option>
+                    <option value="tenor">tenor</option>
+                    <option value="baixo">baixo</option>
                 </select>
             </div>
         </div>
@@ -217,7 +216,7 @@
                     <div class="text-red-400 p-4 text-center text-xs bg-red-900/20 rounded-lg">
                         <i class="fas fa-exclamation-triangle mb-2 block text-lg"></i>
                         ${error.message}
-                        <div class="mt-2 text-[10px] text-gray-400">Verifique se as pastas (Soprano1, Tenor, etc) existem dentro do repositório "${GITHUB_REPO}".</div>
+                        <div class="mt-2 text-[10px] text-gray-400">Verifique se as pastas (soprano, Tenor, etc) existem dentro do repositório "${GITHUB_REPO}".</div>
                     </div>`;
                 fileCountEl.textContent = 'Erro';
             } finally {
