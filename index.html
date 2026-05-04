@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coral Alvorada - Aniversário 2026 </title>
+    <title>Coral Alvorada - Aniversário 2026</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -33,7 +37,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.4);
         }
         .playlist-item:hover {
-            background-color: #264B2F;
+            background-color: rgba(38, 75, 47, 0.8);
         }
         .playlist-item.playing {
             background-color: #FC5E1E;
@@ -54,18 +58,20 @@
         }
     </style>
 </head>
-<body class="text-white flex items-center justify-center min-h-screen p-4">
+<body class="text-white flex items-center justify-center min-h-screen p-4 relative">
 
-    <div class="w-full max-w-md bg-[#053D47] rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+    <!-- Container Principal com a Imagem de Fundo da Fita Cassete -->
+    <div class="w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/20 relative"
+         style="background-image: linear-gradient(to bottom, rgba(5, 61, 71, 0.85), rgba(0, 17, 27, 0.95)), url('https://raw.githubusercontent.com/GlauberLASantiago/ani-alvorada-2026/main/fundo-cassete.png'); background-size: cover; background-position: center;">
         
         <!-- Cabeçalho e Seletor -->
-        <div class="p-6 bg-[#053D47]/80 backdrop-blur-sm border-b border-white/5">
+        <div class="p-6 bg-[#053D47]/40 backdrop-blur-sm border-b border-white/10">
             <h1 class="text-xs font-bold text-[#75FF31] uppercase tracking-widest mb-1">Kit de Ensaio</h1>
-            <h2 class="text-xl font-bold mb-4">Ani. Alvorada 2026 (para uso interno)</h2>
+            <h2 class="text-xl font-bold mb-4 drop-shadow-md">Ani. Alvorada 2026 <span class="text-sm font-normal opacity-75">(uso interno)</span></h2>
             
             <div class="relative">
-                <label for="voice-selector" class="block text-[10px] text-gray-400 mb-1 uppercase font-semibold">Selecione sua voz:</label>
-                <select id="voice-selector" class="w-full bg-[#00111B] border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FC5E1E] transition-all">
+                <label for="voice-selector" class="block text-[10px] text-gray-300 mb-1 uppercase font-semibold drop-shadow">Selecione sua voz:</label>
+                <select id="voice-selector" class="w-full bg-[#00111B]/80 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FC5E1E] transition-all backdrop-blur-md">
                     <option value="soprano">soprano</option>
                     <option value="contralto">contralto</option>
                     <option value="tenor">tenor</option>
@@ -75,54 +81,54 @@
         </div>
 
         <!-- Display do Player -->
-        <div class="p-6 text-center">
+        <div class="p-6 text-center relative z-10">
             <div class="mb-2">
-                <i class="fas fa-music text-4xl text-[#FC5E1E]/50"></i>
+                <i class="fas fa-compact-disc fa-spin text-5xl text-[#FC5E1E]/80 drop-shadow-lg" style="animation-duration: 3s;"></i>
             </div>
-            <h3 class="text-lg font-medium leading-tight px-4" id="current-song-title">Aguardando seleção...</h3>
-            <p class="text-xs text-[#75FF31] mt-2 font-mono uppercase" id="current-voice-label">Voz: -</p>
+            <h3 class="text-lg font-medium leading-tight px-4 drop-shadow-md" id="current-song-title">Aguardando seleção...</h3>
+            <p class="text-xs text-[#75FF31] mt-2 font-mono uppercase drop-shadow" id="current-voice-label">Voz: -</p>
         </div>
 
         <!-- Controles e Barra de Progresso -->
-        <div class="px-6 pb-6">
-             <div class="flex items-center justify-between text-[10px] text-gray-400 mb-2 font-mono">
+        <div class="px-6 pb-6 relative z-10">
+             <div class="flex items-center justify-between text-[10px] text-gray-300 mb-2 font-mono drop-shadow">
                 <span id="current-time">0:00</span>
                 <span id="duration">0:00</span>
             </div>
-            <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-[#264B2F] rounded-lg appearance-none cursor-pointer">
+            <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-[#264B2F]/80 rounded-lg appearance-none cursor-pointer">
             
             <div class="flex items-center justify-between mt-6">
                 <!-- Botão de Loop -->
-                <button id="loop-btn" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-200 active" title="Repetir">
+                <button id="loop-btn" class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-200 active drop-shadow" title="Repetir">
                     <i class="fas fa-repeat fa-lg"></i>
                 </button>
                 
                 <!-- Controles Principais -->
                 <div class="flex items-center justify-center space-x-4">
-                    <button id="prev-btn" class="text-gray-300 hover:text-white transition-colors duration-200 p-2">
+                    <button id="prev-btn" class="text-gray-200 hover:text-white transition-colors duration-200 p-2 drop-shadow-md">
                         <i class="fas fa-backward-step fa-xl"></i>
                     </button>
-                    <button id="play-pause-btn" class="bg-[#FC5E1E] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200">
+                    <button id="play-pause-btn" class="bg-[#FC5E1E] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20">
                         <i id="play-pause-icon" class="fas fa-play fa-xl translate-x-0.5"></i>
                     </button>
-                    <button id="next-btn" class="text-gray-300 hover:text-white transition-colors duration-200 p-2">
+                    <button id="next-btn" class="text-gray-200 hover:text-white transition-colors duration-200 p-2 drop-shadow-md">
                         <i class="fas fa-forward-step fa-xl"></i>
                     </button>
                 </div>
 
                 <!-- Controle de Volume -->
-                <div class="flex items-center space-x-2 w-1/4 group">
-                    <i id="volume-icon" class="fas fa-volume-high text-gray-400 text-xs"></i>
-                    <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-full h-1 bg-[#264B2F] rounded-lg appearance-none cursor-pointer">
+                <div class="flex items-center space-x-2 w-1/4 group drop-shadow">
+                    <i id="volume-icon" class="fas fa-volume-high text-gray-300 text-xs"></i>
+                    <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-full h-1 bg-[#264B2F]/80 rounded-lg appearance-none cursor-pointer">
                 </div>
             </div>
         </div>
 
         <!-- Playlist -->
-        <div class="bg-[#00111B] p-4 border-t border-white/5">
+        <div class="bg-[#00111B]/80 backdrop-blur-md p-4 border-t border-white/10 relative z-10">
             <div class="flex items-center justify-between mb-3 px-2">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Arquivos na Pasta</h3>
-                <span id="file-count" class="text-[10px] bg-[#053D47] px-2 py-0.5 rounded text-gray-300">0 arquivos</span>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-300">Arquivos na Pasta</h3>
+                <span id="file-count" class="text-[10px] bg-[#053D47]/80 px-2 py-0.5 rounded text-gray-200 border border-white/10">0 arquivos</span>
             </div>
             <div id="playlist" class="max-h-52 overflow-y-auto space-y-1 pr-1">
                 <div id="loader" class="text-center p-8 opacity-50">
@@ -133,7 +139,7 @@
         </div>
         
         <!-- Rodapé -->
-        <div class="bg-[#053D47] text-center p-4 text-[10px] text-gray-500 uppercase tracking-tighter">
+        <div class="bg-[#053D47]/90 backdrop-blur-md text-center p-4 text-[10px] text-gray-400 uppercase tracking-tighter border-t border-white/5">
             <p>© Coral Alvorada - Apenas para uso interno</p>
         </div>
     </div>
@@ -141,11 +147,9 @@
     <audio id="audio-player" class="hidden"></audio>
 
     <script>
-        // --- CONFIGURAÇÃO ATUALIZADA ---
         const GITHUB_USER = "glauberlasantiago";
-        const GITHUB_REPO = "ani-alvorada-2026"; // Nome corrigido baseado na URL fornecida
+        const GITHUB_REPO = "ani-alvorada-2026";
 
-        // --- ELEMENTOS DO DOM ---
         const audioPlayer = document.getElementById('audio-player');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const playPauseIcon = document.getElementById('play-pause-icon');
@@ -164,24 +168,18 @@
         const voiceSelector = document.getElementById('voice-selector');
         const fileCountEl = document.getElementById('file-count');
 
-        // --- ESTADO DO PLAYER ---
         let playlist = [];
         let currentSongIndex = -1;
         let isPlaying = false;
         let isLooping = true;
 
-        // --- INICIALIZAÇÃO ---
         audioPlayer.loop = isLooping;
         audioPlayer.volume = 1;
 
-        /**
-         * Busca os arquivos de áudio baseado na pasta da voz selecionada.
-         */
         async function fetchAndBuildPlaylist() {
             const selectedVoice = voiceSelector.value;
             const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${selectedVoice}`;
             
-            // UI Update
             loader.style.display = 'block';
             playlistEl.innerHTML = '';
             playlistEl.appendChild(loader);
@@ -213,7 +211,7 @@
             } catch (error) {
                 console.error(error);
                 playlistEl.innerHTML = `
-                    <div class="text-red-400 p-4 text-center text-xs bg-red-900/20 rounded-lg">
+                    <div class="text-red-400 p-4 text-center text-xs bg-red-900/20 rounded-lg border border-red-500/30">
                         <i class="fas fa-exclamation-triangle mb-2 block text-lg"></i>
                         ${error.message}
                         <div class="mt-2 text-[10px] text-gray-400">Verifique se as pastas (soprano, Tenor, etc) existem dentro do repositório "${GITHUB_REPO}".</div>
@@ -224,14 +222,11 @@
             }
         }
 
-        /**
-         * Renderiza a lista na tela.
-         */
         function renderPlaylist() {
             playlistEl.innerHTML = '';
             
             if (playlist.length === 0) {
-                playlistEl.innerHTML = `<div class="text-gray-500 p-4 text-center text-xs">Nenhum arquivo .mp3 encontrado nesta pasta.</div>`;
+                playlistEl.innerHTML = `<div class="text-gray-400 p-4 text-center text-xs">Nenhum arquivo .mp3 encontrado nesta pasta.</div>`;
                 return;
             }
 
@@ -239,7 +234,7 @@
                 const songItem = document.createElement('div');
                 songItem.className = 'playlist-item p-3 rounded-lg cursor-pointer flex items-center transition-all duration-200 border border-transparent';
                 songItem.innerHTML = `
-                    <div class="w-6 h-6 flex items-center justify-center rounded-full bg-white/5 mr-3 text-[10px] font-mono">
+                    <div class="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 mr-3 text-[10px] font-mono shadow-inner">
                         ${index + 1}
                     </div>
                     <span class="flex-1 truncate text-sm font-medium">${song.name}</span>
@@ -346,7 +341,6 @@
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // --- EVENT LISTENERS ---
         playPauseBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', playPrevious);
         nextBtn.addEventListener('click', playNext);
@@ -366,7 +360,6 @@
         });
 
         document.addEventListener('DOMContentLoaded', fetchAndBuildPlaylist);
-
     </script>
 </body>
 </html>
